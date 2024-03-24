@@ -1,0 +1,49 @@
+from flask import Flask, render_template, request
+import openai
+
+app = Flask(__name__)
+
+openai.api_key = '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'
+
+def calculate_overall_score(code):
+    # Add your logic to calculate the overall score based on code quality
+    # You can consider factors like code style, syntax, line length, variable naming, etc.
+    # For now, let's assume a simple scoring mechanism (you can customize it):
+    score = len(code.split())  # Example: score based on the number of words in the code
+    
+    return score
+
+def get_code_suggestion(prompt):
+    response = openai.Completion.create(
+        engine="davinci-002",
+        prompt=prompt,
+        max_tokens=200
+    )
+
+    suggestion_text = response.choices[0].text.strip()
+    suggestion_parts = suggestion_text.split('\n', 2)
+
+    code_suggestion = suggestion_parts[0].strip()
+    description = code_suggestion  # Use the extracted code as the description
+    overall_score = calculate_overall_score(code_suggestion)
+
+    return code_suggestion, description, overall_score
+
+def categorize_coder_experience(overall_score):
+    # Define a threshold for categorizing as a noob or professional experienced coder
+    threshold = 50  # You can adjust this threshold based on your preferences
+    return "Professional Experienced Coder" if overall_score >= threshold else "Noob Coder"
+
+@app.route('/')
+def index():
+    return render_template('index.html', suggestion=None)
+
+@app.route('/get_suggestion', methods=['POST'])
+def get_suggestion():
+    code_input = request.form['code_input']
+    code_suggestion, description, overall_score = get_code_suggestion(code_input)
+    coder_experience = categorize_coder_experience(overall_score)
+    return render_template('index.html', suggestion=code_suggestion, description=description, overall_score=overall_score, coder_experience=coder_experience)
+
+if __name__ == '__main__':
+    app.run(debug=True)

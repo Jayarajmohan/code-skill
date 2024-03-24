@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='style.css') }}"
+    />
+    <title>SkillScore CodeAnalyzer</title>
+  </head>
+
+  <body>
+    <header>
+      <div class="logo_container">
+        <!-- <img src="{{ url_for('static', filename='icons8-code-64.png') }}" class="logo" src="" alt=""> -->
+        <h3>CodeAnalyzer</h3>
+      </div>
+      <ul class="list">
+        <li class="list-items">Home</li>
+        <li class="list-items">Code Evaluator</li>
+        <li class="list-items">About</li>
+      </ul>
+    </header>
+    <div class="main-heading">
+      <h4 class="code-text">Hello, coder.</h4>
+      <h4 class="code-text_2">Check Your Coding Skill.</h4>
+    </div>
+    <div class="code-writer">
+      <div class="wrapper">
+        <form method="post" action="/get_suggestion">
+          <select name="code_language">
+            <option value="python">Python</option>
+            <option value="java">Java</option>
+            <option value="javascript">Javascript</option>
+          </select>
+          <textarea
+            name="code_input"
+            cols="30"
+            rows="10"
+            placeholder="Write Your Code Here.."
+          >
+{{code_written}}</textarea
+          ><div style="color: red;">{{error_suggestion}}</div>
+          <div class="submit">
+            <button name="submit" value="submit" class="wrapper-submit" type="submit">Submit</button>
+            
+            <i class="fa-solid fa-paper-plane"></i>
+            
+          </div>
+          <button name="submit" value="check" class="wrapper-submit">Check</button>
+        </form>
+      </div>
+      <div class="suggestions">
+        
+        <div class="results">
+          {% if code_classification %}
+          <p>Language:{{language}}</p>
+          <p>Level:{{ code_classification }}</p>
+        </div>
+        <div class="inner-box">
+         
+          
+
+          <p>You have some suggestions: {{suggestion}}</p>
+          {% endif %}
+        </div>
+        <div class="inner-box">
+          {% if suggestion_link %}
+          <p>Here are some materials for you to imporve your coding.</p>
+          <a href="{{suggestion_link}}" target="_blank">{{suggestion_link}}</a>
+          
+          {% endif %}
+        </div>
+      </div>
+    </div>
+    
+    <footer>
+      <p>SkillScore CodeAnalyzer</p>
+    </footer>
+  </body>
+</html>
